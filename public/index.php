@@ -25,6 +25,16 @@ declare(strict_types=1);
                     <p>Zone de jeu (placeholder)</p>
                 </div>
 
+                <div class="field">
+                    <label for="mode-select">Mode de jeu</label>
+                    <select id="mode-select" name="mode">
+                        <option value="animaux">Animaux</option>
+                        <option value="bruits_familiers">Bruits familiers</option>
+                    </select>
+                </div>
+
+                <p class="status" data-catalogue-status>Catalogue : chargement…</p>
+
                 <div class="actions">
                     <button class="btn" type="button" disabled>Jouer</button>
                     <button class="btn btn--ghost" type="button" disabled>Règles</button>
@@ -37,6 +47,6 @@ declare(strict_types=1);
         </section>
     </main>
 
-    <script src="/assets/js/app.js" defer></script>
+    <script type="module" src="/assets/js/app.js"></script>
 </body>
 </html>

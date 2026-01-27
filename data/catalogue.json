@@ -1,0 +1,257 @@
+{
+  "version": 1,
+  "modes": [
+    {
+      "id": "animaux",
+      "label": "Animaux",
+      "sounds": [
+        {
+          "id": "a01",
+          "label": "Abeille",
+          "file": "animaux/abeille.mp3"
+        },
+        {
+          "id": "a02",
+          "label": "Ane",
+          "file": "animaux/ane.mp3"
+        },
+        {
+          "id": "a03",
+          "label": "Canard",
+          "file": "animaux/canard.mp3"
+        },
+        {
+          "id": "a04",
+          "label": "Chat",
+          "file": "animaux/chat.mp3"
+        },
+        {
+          "id": "a05",
+          "label": "Cheval",
+          "file": "animaux/cheval.mp3"
+        },
+        {
+          "id": "a06",
+          "label": "Chien Aboie",
+          "file": "animaux/chien_aboie.mp3"
+        },
+        {
+          "id": "a07",
+          "label": "Chien Lappe",
+          "file": "animaux/chien_lappe.mp3"
+        },
+        {
+          "id": "a08",
+          "label": "Chouette",
+          "file": "animaux/chouette.mp3"
+        },
+        {
+          "id": "a09",
+          "label": "Cochon",
+          "file": "animaux/cochon.mp3"
+        },
+        {
+          "id": "a10",
+          "label": "Coq",
+          "file": "animaux/coq.mp3"
+        },
+        {
+          "id": "a11",
+          "label": "Dauphin",
+          "file": "animaux/dauphin.mp3"
+        },
+        {
+          "id": "a12",
+          "label": "Elephant",
+          "file": "animaux/elephant.mp3"
+        },
+        {
+          "id": "a13",
+          "label": "Grenouille",
+          "file": "animaux/grenouille.mp3"
+        },
+        {
+          "id": "a14",
+          "label": "Lion",
+          "file": "animaux/lion.mp3"
+        },
+        {
+          "id": "a15",
+          "label": "Loup",
+          "file": "animaux/loup.mp3"
+        },
+        {
+          "id": "a16",
+          "label": "Moineau",
+          "file": "animaux/moineau.mp3"
+        },
+        {
+          "id": "a17",
+          "label": "Mouton",
+          "file": "animaux/mouton.mp3"
+        },
+        {
+          "id": "a18",
+          "label": "Oie",
+          "file": "animaux/oie.mp3"
+        },
+        {
+          "id": "a19",
+          "label": "Perroquet",
+          "file": "animaux/perroquet.mp3"
+        },
+        {
+          "id": "a20",
+          "label": "Pigeon",
+          "file": "animaux/pigeon.mp3"
+        },
+        {
+          "id": "a21",
+          "label": "Poule",
+          "file": "animaux/poule.mp3"
+        },
+        {
+          "id": "a22",
+          "label": "Serin",
+          "file": "animaux/serin.mp3"
+        },
+        {
+          "id": "a23",
+          "label": "Souris",
+          "file": "animaux/souris.mp3"
+        },
+        {
+          "id": "a24",
+          "label": "Vache",
+          "file": "animaux/vache.mp3"
+        }
+      ]
+    },
+    {
+      "id": "bruits_familiers",
+      "label": "Bruits familiers",
+      "sounds": [
+        {
+          "id": "b01",
+          "label": "Bateau",
+          "file": "bruits_familiers/bateau.mp3"
+        },
+        {
+          "id": "b02",
+          "label": "Bebe Rire",
+          "file": "bruits_familiers/bebe_rire.mp3"
+        },
+        {
+          "id": "b03",
+          "label": "Brossage Dent",
+          "file": "bruits_familiers/brossage_dent.mp3"
+        },
+        {
+          "id": "b04",
+          "label": "Cloche",
+          "file": "bruits_familiers/cloche.mp3"
+        },
+        {
+          "id": "b05",
+          "label": "Coucou",
+          "file": "bruits_familiers/coucou.mp3"
+        },
+        {
+          "id": "b06",
+          "label": "Flute",
+          "file": "bruits_familiers/flute.mp3"
+        },
+        {
+          "id": "b07",
+          "label": "Harmonica",
+          "file": "bruits_familiers/harmonica.mp3"
+        },
+        {
+          "id": "b08",
+          "label": "Marteau",
+          "file": "bruits_familiers/marteau.mp3"
+        },
+        {
+          "id": "b09",
+          "label": "Piano",
+          "file": "bruits_familiers/piano.mp3"
+        },
+        {
+          "id": "b10",
+          "label": "Reveil",
+          "file": "bruits_familiers/reveil.mp3"
+        },
+        {
+          "id": "b11",
+          "label": "Rire",
+          "file": "bruits_familiers/rire.mp3"
+        },
+        {
+          "id": "b12",
+          "label": "Robinet Goutte",
+          "file": "bruits_familiers/robinet_goutte.mp3"
+        },
+        {
+          "id": "b13",
+          "label": "Scie",
+          "file": "bruits_familiers/scie.mp3"
+        },
+        {
+          "id": "b14",
+          "label": "Tambour",
+          "file": "bruits_familiers/tambour.mp3"
+        },
+        {
+          "id": "b15",
+          "label": "Telephone",
+          "file": "bruits_familiers/telephone.mp3"
+        },
+        {
+          "id": "b16",
+          "label": "Tennis",
+          "file": "bruits_familiers/tennis.mp3"
+        },
+        {
+          "id": "b17",
+          "label": "Tire Bouchon",
+          "file": "bruits_familiers/tire_bouchon.mp3"
+        },
+        {
+          "id": "b18",
+          "label": "Tracteur",
+          "file": "bruits_familiers/tracteur.mp3"
+        },
+        {
+          "id": "b19",
+          "label": "Trompette",
+          "file": "bruits_familiers/trompette.mp3"
+        },
+        {
+          "id": "b20",
+          "label": "Violoncelle",
+          "file": "bruits_familiers/violoncelle.mp3"
+        },
+        {
+          "id": "b21",
+          "label": "Voiture Course",
+          "file": "bruits_familiers/voiture_course.mp3"
+        },
+        {
+          "id": "b22",
+          "label": "Voiture Klaxon",
+          "file": "bruits_familiers/voiture_klaxon.mp3"
+        },
+        {
+          "id": "b23",
+          "label": "Voiture Police",
+          "file": "bruits_familiers/voiture_police.mp3"
+        },
+        {
+          "id": "b24",
+          "label": "Xilophone",
+          "file": "bruits_familiers/xilophone.mp3"
+        }
+      ]
+    }
+  ]
+}

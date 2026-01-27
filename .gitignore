@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# Logs / temp
+*.log
+*.tmp
+*.temp
+*~
+*.swp
+*.swo
+
+# OS / tooling
+Thumbs.db
+.EHThumbs.db
+
+# Node / build artifacts (si ajoutés plus tard)
+node_modules/
+dist/

@@ -79,6 +79,57 @@ body {
     margin-top: 20px;
 }
 
+.field {
+    display: grid;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.field label {
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.field select {
+    appearance: none;
+    padding: 12px 14px;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background-color: #fff;
+    color: var(--ink);
+}
+
+.field select:focus {
+    outline: 2px solid rgba(241, 178, 74, 0.5);
+    border-color: var(--accent);
+}
+
+.status {
+    margin: 16px 0 0;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: #f3efe7;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.status--loading {
+    border: 1px dashed var(--border);
+}
+
+.status--success {
+    border: 1px solid rgba(110, 187, 161, 0.5);
+    color: #2b5748;
+    background: rgba(110, 187, 161, 0.16);
+}
+
+.status--error {
+    border: 1px solid rgba(204, 90, 90, 0.5);
+    color: #7a2c2c;
+    background: rgba(204, 90, 90, 0.16);
+}
+
 .btn {
     appearance: none;
     border: none;

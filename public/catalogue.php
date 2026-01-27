@@ -26,4 +26,11 @@ if (!is_array($data)) {
     exit;
 }
 
-echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+$encoded = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+if ($encoded === false) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Encodage JSON impossible.']);
+    exit;
+}
+
+echo $encoded;

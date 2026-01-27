@@ -33,7 +33,7 @@ declare(strict_types=1);
                     </select>
                 </div>
 
-                <p class="status" data-catalogue-status>Catalogue : chargement…</p>
+                <p class="status status--loading" data-catalogue-status>Catalogue : chargement…</p>
 
                 <div class="actions">
                     <button class="btn" type="button" disabled>Jouer</button>

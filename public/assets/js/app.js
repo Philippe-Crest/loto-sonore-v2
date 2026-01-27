@@ -1,9 +1,14 @@
 import { loadCatalogue } from './catalogue.js';
 
 const statusEl = document.querySelector('[data-catalogue-status]');
+const statusClasses = ['status--loading', 'status--success', 'status--error'];
 
-function setStatus(message) {
+function setStatus(message, state) {
     if (statusEl) {
+        statusEl.classList.remove(...statusClasses);
+        if (state) {
+            statusEl.classList.add(`status--${state}`);
+        }
         statusEl.textContent = message;
     }
 }
@@ -11,13 +16,12 @@ function setStatus(message) {
 (async () => {
     try {
         console.log('app ready');
-        const catalogue = await loadCatalogue();
-        const total = catalogue.modes.reduce((sum, mode) => sum + mode.sounds.length, 0);
+        const { total } = await loadCatalogue();
         console.log(`catalogue loaded: ${total}`);
-        setStatus(`Catalogue : ${total} sons chargés`);
+        setStatus(`Catalogue : ${total} sons chargés`, 'success');
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue.';
         console.error(error);
-        setStatus(`Erreur catalogue : ${message}`);
+        setStatus(`Erreur catalogue : ${message}`, 'error');
     }
 })();

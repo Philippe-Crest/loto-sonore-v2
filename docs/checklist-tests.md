@@ -16,3 +16,6 @@
 - [ ] `GET /catalogue.php` renvoie 200 + JSON.
 - [ ] L’UI affiche “Catalogue : 48 sons chargés”.
 - [ ] Console : `catalogue loaded: 48`.
+- [ ] En cas de catalogue invalide, message d’erreur clair (UI + console).
+- [ ] Menu “Mode de jeu” lisible et utilisable.
+- [ ] Statut catalogue lisible (chargement / succès / erreur).

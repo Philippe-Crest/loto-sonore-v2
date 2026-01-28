@@ -33,7 +33,23 @@ declare(strict_types=1);
                     </select>
                 </div>
 
-                <p class="status status--loading" data-catalogue-status>Catalogue : chargement…</p>
+                <div class="field">
+                    <label for="sound-select">Son</label>
+                    <select id="sound-select" name="sound">
+                        <option value="">Chargement des sons…</option>
+                    </select>
+                </div>
+
+                <div class="player">
+                    <button class="btn" type="button" id="play-sound">
+                        Lire le son
+                    </button>
+                    <audio id="audio-player" controls preload="none"></audio>
+                </div>
+
+                <p class="status status--loading" data-catalogue-status aria-live="polite" role="status">
+                    Catalogue : chargement…
+                </p>
 
                 <div class="actions">
                     <button class="btn" type="button" disabled>Jouer</button>

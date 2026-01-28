@@ -94,6 +94,7 @@ if ($range !== '') {
         send_error(416, 'range_invalid', 'Range invalide.');
     }
 
+    $isSuffix = false;
     if ($startStr === '') {
         $suffixLength = (int)$endStr;
         if ($suffixLength <= 0) {
@@ -101,11 +102,13 @@ if ($range !== '') {
             send_error(416, 'range_invalid', 'Range invalide.');
         }
         $start = max(0, $fileSize - $suffixLength);
+        $end = $fileSize - 1;
+        $isSuffix = true;
     } else {
         $start = (int)$startStr;
     }
 
-    if ($endStr !== '') {
+    if ($endStr !== '' && !$isSuffix) {
         $end = (int)$endStr;
     }
 

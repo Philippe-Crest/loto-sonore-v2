@@ -45,6 +45,13 @@
 
 - [ ] Épuiser le deck sans victoire → état terminé et message "personne n’a gagné" + debug explicite.
 
+## Deck restreint aux joueurs
+
+- [ ] Inscrire rouge + bleu, catégorie animaux → total = 12.
+- [ ] Inscrire rouge + bleu + vert, catégorie animaux → total = 18.
+- [ ] Inscrire 4 joueurs, catégorie animaux → total = 24.
+- [ ] Vérifier qu’aucun son d’une couleur non inscrite n’est tiré.
+
 ## Non-régressions majeures
 
 - [ ] Tirage sans répétition conserve le comportement précédent.

@@ -197,11 +197,44 @@ export function initGameUI(options) {
         const category = categorySelect.value;
         const difficulty = difficultySelect.value;
         const config = difficultyMap[difficulty] ?? difficultyMap.manual;
+        const selectedIds = new Set();
+        const categoryPlanches = planches?.[category];
+
+        for (const color of players) {
+            const ids = categoryPlanches?.[color];
+            if (Array.isArray(ids)) {
+                ids.forEach((id) => selectedIds.add(id));
+            }
+        }
+
+        if (selectedIds.size === 0) {
+            setGameStatus('Démarrage impossible : aucun son pour les joueurs inscrits.', 'error');
+            setDebugStatus('Deck joueurs vide : vérifier les planches sélectionnées.', 'error');
+            return;
+        }
+
+        const filteredMode = catalogue.modes.find((modeEntry) => modeEntry.id === category);
+        if (!filteredMode) {
+            setGameStatus('Démarrage impossible : catégorie absente du catalogue.', 'error');
+            setDebugStatus(`Catalogue incomplet pour la catégorie ${category}.`, 'error');
+            return;
+        }
+        const filteredSounds = (filteredMode?.sounds ?? []).filter((sound) => selectedIds.has(sound.id));
+        const filteredCatalogue = {
+            ...catalogue,
+            modes: [
+                {
+                    ...filteredMode,
+                    sounds: filteredSounds,
+                },
+            ],
+        };
 
         resetRuntimeState();
+        setDebugStatus(`Deck joueurs : ${selectedIds.size} sons (couleurs : ${players.join(', ')})`, 'success');
 
         engine.start({
-            catalogue,
+            catalogue: filteredCatalogue,
             category,
             mode: config.mode,
             intervalMs: config.intervalMs,

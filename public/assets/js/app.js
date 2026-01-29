@@ -1,7 +1,9 @@
 import { loadCatalogue } from './catalogue.js';
+import { initGameUI } from './game-ui.js';
 
 const statusEl = document.querySelector('[data-catalogue-status]');
 const statusClasses = ['status--loading', 'status--success', 'status--error'];
+const gameStatusEl = document.querySelector('[data-game-status]');
 const modeSelect = document.querySelector('#mode-select');
 const soundSelect = document.querySelector('#sound-select');
 const playButton = document.querySelector('#play-sound');
@@ -15,6 +17,40 @@ function setStatus(message, state) {
         }
         statusEl.textContent = message;
     }
+}
+
+function setGameStatus(message, state) {
+    if (gameStatusEl) {
+        gameStatusEl.classList.remove(...statusClasses);
+        if (state) {
+            gameStatusEl.classList.add(`status--${state}`);
+        }
+        gameStatusEl.textContent = message;
+    }
+}
+
+function playAudio() {
+    if (!audioPlayer) {
+        return Promise.reject(new Error('Audio indisponible.'));
+    }
+    return audioPlayer.play();
+}
+
+function pauseAudio() {
+    if (!audioPlayer) {
+        return;
+    }
+    audioPlayer.pause();
+}
+
+function resumeAudio() {
+    if (!audioPlayer) {
+        return Promise.resolve();
+    }
+    if (audioPlayer.paused && audioPlayer.currentTime > 0) {
+        return audioPlayer.play();
+    }
+    return Promise.resolve();
 }
 
 function resetAudio() {
@@ -127,9 +163,21 @@ function setAudioSource(soundId) {
             audioPlayer.addEventListener('error', errorHandler);
             audioPlayer.addEventListener('stalled', errorHandler);
         }
+
+        initGameUI({
+            catalogue,
+            setAudioSource,
+            playAudio,
+            pauseAudio,
+            resumeAudio,
+            resetAudio,
+            setGameStatus,
+            soundSelect,
+        });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue.';
         console.error(error);
-        setStatus(`Erreur catalogue : ${message}`, 'error');
+        setStatus('Erreur catalogue : catalogue indisponible ou invalide.', 'error');
+        setGameStatus('Jeu indisponible : catalogue non chargé.', 'error');
     }
 })();

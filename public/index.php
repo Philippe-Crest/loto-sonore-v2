@@ -47,6 +47,47 @@ declare(strict_types=1);
                     <audio id="audio-player" controls preload="none"></audio>
                 </div>
 
+                <section class="game">
+                    <h2 class="game__title">Jeu</h2>
+
+                    <div class="game__controls">
+                        <div class="field">
+                            <label for="game-category">Catégorie</label>
+                            <select id="game-category" name="game-category">
+                                <option value="all">Tous</option>
+                                <option value="animaux">Animaux</option>
+                                <option value="bruits_familiers">Bruits familiers</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="game-difficulty">Difficulté</label>
+                            <select id="game-difficulty" name="game-difficulty">
+                                <option value="manual">Manuel</option>
+                                <option value="auto-slow">Automatique lent</option>
+                                <option value="auto-normal">Automatique normal</option>
+                                <option value="auto-fast">Automatique rapide</option>
+                            </select>
+                        </div>
+
+                        <div class="game__buttons">
+                            <button class="btn" type="button" id="game-start" disabled>Démarrer</button>
+                            <button class="btn" type="button" id="game-next" disabled>Tirage suivant</button>
+                            <button class="btn" type="button" id="game-pause" disabled>Pause</button>
+                            <button class="btn" type="button" id="game-reset" disabled>Réinitialiser</button>
+                        </div>
+                    </div>
+
+                    <p class="status status--loading" data-game-status aria-live="polite" role="status">
+                        Jeu : en attente.
+                    </p>
+
+                    <div class="game__meta">
+                        <p><strong>Restants :</strong> <span id="game-remaining">0</span> / <span id="game-total">0</span></p>
+                        <p><strong>Dernier tirage :</strong> <span id="game-last">—</span></p>
+                    </div>
+                </section>
+
                 <p class="status status--loading" data-catalogue-status aria-live="polite" role="status">
                     Catalogue : chargement…
                 </p>

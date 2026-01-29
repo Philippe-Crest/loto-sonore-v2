@@ -140,6 +140,34 @@ body {
     width: 100%;
 }
 
+.game {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    display: grid;
+    gap: 16px;
+}
+
+.game__title {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.game__controls {
+    display: grid;
+    gap: 16px;
+}
+
+.game__buttons {
+    display: grid;
+    gap: 12px;
+}
+
+.game__meta {
+    display: grid;
+    gap: 6px;
+    color: var(--muted);
+}
+
 .btn {
     appearance: none;
     border: none;
@@ -149,8 +177,12 @@ body {
     font-weight: 700;
     background: var(--accent);
     color: #1b1b1b;
-    cursor: not-allowed;
+    cursor: pointer;
     box-shadow: 0 6px 14px rgba(241, 178, 74, 0.35);
+}
+
+.btn:disabled {
+    cursor: not-allowed;
 }
 
 .btn--ghost {
@@ -178,6 +210,10 @@ code {
 
     .actions {
         flex-direction: column;
+    }
+
+    .game__buttons {
+        grid-template-columns: 1fr;
     }
 
     .btn {

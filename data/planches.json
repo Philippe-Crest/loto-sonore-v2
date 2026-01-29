@@ -1,0 +1,70 @@
+{
+  "animaux": {
+    "rouge": [
+      "chien-aboie",
+      "souris",
+      "abeille",
+      "elephant",
+      "grenouille",
+      "serin"
+    ],
+    "bleu": [
+      "chat",
+      "poule",
+      "chouette",
+      "dauphin",
+      "loup",
+      "cochon"
+    ],
+    "vert": [
+      "vache",
+      "ane",
+      "cheval",
+      "chien-lappe",
+      "moineau",
+      "canard"
+    ],
+    "jaune": [
+      "pigeon",
+      "oie",
+      "lion",
+      "coq",
+      "mouton",
+      "perroquet"
+    ]
+  },
+  "bruits_familiers": {
+    "rouge": [
+      "reveil",
+      "trompette",
+      "brossage_dent",
+      "coucou",
+      "rire",
+      "xilophone"
+    ],
+    "bleu": [
+      "cloche",
+      "bebe_rire",
+      "tambour",
+      "flute",
+      "voiture_police",
+      "tennis"
+    ],
+    "vert": [
+      "voiture_klaxon",
+      "tire_bouchon",
+      "marteau",
+      "voiture_course",
+      "bateau",
+      "violoncelle"
+    ],
+    "jaune": [
+      "scie",
+      "harmonica",
+      "robinet_goutte",
+      "piano",
+      "tracteur",
+      "telephone"
+    ]
+  }
+}

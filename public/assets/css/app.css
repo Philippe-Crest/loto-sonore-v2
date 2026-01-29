@@ -168,6 +168,18 @@ body {
     color: var(--muted);
 }
 
+.game__players {
+    display: grid;
+    gap: 6px;
+    color: var(--muted);
+}
+
+.game__colors {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
 .btn {
     appearance: none;
     border: none;

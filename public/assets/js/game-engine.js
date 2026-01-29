@@ -153,6 +153,17 @@ export function createGameEngine() {
         onFinish = null;
     }
 
+    function finish() {
+        if (state === 'finished') {
+            return;
+        }
+        clearTimer();
+        state = 'finished';
+        if (typeof onFinish === 'function') {
+            onFinish();
+        }
+    }
+
     function getState() {
         return state;
     }
@@ -179,6 +190,7 @@ export function createGameEngine() {
         pause,
         resume,
         reset,
+        finish,
         getState,
         getMode,
         getRemainingCount,

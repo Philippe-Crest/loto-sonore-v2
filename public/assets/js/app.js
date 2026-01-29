@@ -1,9 +1,11 @@
 import { loadCatalogue } from './catalogue.js';
+import { loadPlanches } from './planches.js';
 import { initGameUI } from './game-ui.js';
 
 const statusEl = document.querySelector('[data-catalogue-status]');
 const statusClasses = ['status--loading', 'status--success', 'status--error'];
 const gameStatusEl = document.querySelector('[data-game-status]');
+const debugStatusEl = document.querySelector('[data-debug-status]');
 const modeSelect = document.querySelector('#mode-select');
 const soundSelect = document.querySelector('#sound-select');
 const playButton = document.querySelector('#play-sound');
@@ -26,6 +28,16 @@ function setGameStatus(message, state) {
             gameStatusEl.classList.add(`status--${state}`);
         }
         gameStatusEl.textContent = message;
+    }
+}
+
+function setDebugStatus(message, state) {
+    if (debugStatusEl) {
+        debugStatusEl.classList.remove(...statusClasses);
+        if (state) {
+            debugStatusEl.classList.add(`status--${state}`);
+        }
+        debugStatusEl.textContent = message;
     }
 }
 
@@ -123,6 +135,21 @@ function setAudioSource(soundId) {
         const { catalogue, total } = await loadCatalogue();
         console.log(`catalogue loaded: ${total}`);
         setStatus(`Catalogue : ${total} sons chargés`, 'success');
+        setDebugStatus('Debug : en attente.', 'loading');
+
+        let planchesPayload = { valid: false, resolved: null, errors: [] };
+        try {
+            planchesPayload = await loadPlanches(catalogue);
+            if (!planchesPayload.valid) {
+                const message = planchesPayload.errors.join(' ');
+                setDebugStatus(`Planches invalides : ${message}`, 'error');
+            } else {
+                setDebugStatus('Planches : chargées et valides.', 'success');
+            }
+        } catch (planchesError) {
+            const message = planchesError instanceof Error ? planchesError.message : 'Erreur planches inconnue.';
+            setDebugStatus(`Planches indisponibles : ${message}`, 'error');
+        }
 
         if (modeSelect) {
             populateSounds(catalogue, modeSelect.value);
@@ -166,12 +193,15 @@ function setAudioSource(soundId) {
 
         initGameUI({
             catalogue,
+            planches: planchesPayload.resolved,
+            planchesValid: planchesPayload.valid,
             setAudioSource,
             playAudio,
             pauseAudio,
             resumeAudio,
             resetAudio,
             setGameStatus,
+            setDebugStatus,
             soundSelect,
         });
     } catch (error) {

@@ -78,8 +78,24 @@ declare(strict_types=1);
                         </div>
                     </div>
 
+                    <div class="game__players">
+                        <p><strong>Joueurs inscrits :</strong> <span data-players-list>—</span></p>
+                        <p><strong>Gagnant :</strong> <span data-game-winner>—</span></p>
+                    </div>
+
+                    <div class="game__colors">
+                        <button class="btn btn--ghost" type="button" data-player-color="rouge">Rouge</button>
+                        <button class="btn btn--ghost" type="button" data-player-color="bleu">Bleu</button>
+                        <button class="btn btn--ghost" type="button" data-player-color="vert">Vert</button>
+                        <button class="btn btn--ghost" type="button" data-player-color="jaune">Jaune</button>
+                    </div>
+
                     <p class="status status--loading" data-game-status aria-live="polite" role="status">
                         Jeu : en attente.
+                    </p>
+
+                    <p class="status status--loading" data-debug-status aria-live="polite" role="status">
+                        Debug : en attente.
                     </p>
 
                     <div class="game__meta">

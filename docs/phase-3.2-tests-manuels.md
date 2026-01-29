@@ -34,6 +34,8 @@
 - [ ] Pause → tirages stoppés + audio stoppé.
 - [ ] Reprendre → tirages reprennent au bon rythme.
 - [ ] Reset → retour à l’état prêt, joueurs/ historique/gagnant vidés.
+- [ ] En état prêt, le bouton Reset est actif et remet joueurs/gagnant/historique + messages initiaux.
+- [ ] Après un démarrage, les statuts reviennent à l’état initial (pas de message précédent).
 
 ## Revendication de victoire
 

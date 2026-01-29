@@ -119,8 +119,13 @@ export function initGameUI(options) {
         startButton.disabled = state !== 'idle';
         nextButton.disabled = !isManual || !isRunning || isFinished || engine.getRemainingCount() === 0;
         pauseButton.disabled = engine.getMode() !== 'auto' || (state !== 'running' && state !== 'paused') || isFinished;
-        resetButton.disabled = state === 'idle';
+        resetButton.disabled = false;
         pauseButton.textContent = state === 'paused' ? 'Reprendre' : 'Pause';
+    }
+
+    function setInitialStatuses() {
+        setGameStatus('Jeu : en attente.', 'loading');
+        setDebugStatus('Debug : en attente.', 'loading');
     }
 
     function resetRuntimeState() {
@@ -194,6 +199,7 @@ export function initGameUI(options) {
             return;
         }
 
+        setInitialStatuses();
         const category = categorySelect.value;
         const difficulty = difficultySelect.value;
         const config = difficultyMap[difficulty] ?? difficultyMap.manual;
@@ -286,12 +292,13 @@ export function initGameUI(options) {
         resetRuntimeState();
         players.length = 0;
         updatePlayersUI();
+        setInitialStatuses();
+        setGameStatus('Jeu réinitialisé.', 'success');
+        setDebugStatus('Debug : en attente.', 'loading');
         updateMeta();
         if (lastEl) {
             lastEl.textContent = '—';
         }
-        setGameStatus('Jeu réinitialisé.', 'success');
-        setDebugStatus('Debug : en attente.', 'loading');
         setControls(engine.getState());
     }
 

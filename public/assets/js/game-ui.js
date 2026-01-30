@@ -16,33 +16,18 @@ const logicalStateMap = {
 
 const colors = ['rouge', 'bleu', 'vert', 'jaune'];
 
-function playSignal(type) {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) {
-        return;
+const sfxChoice = new Audio('/assets/sfx/choix.mp3');
+const sfxWin = new Audio('/assets/sfx/victoire.mp3');
+const sfxLose = new Audio('/assets/sfx/defaite.mp3');
+
+function playSfx(audio) {
+    try {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.play();
+    } catch (_) {
+        // fail silent
     }
-    const ctx = new AudioContext();
-    const now = ctx.currentTime;
-    const sequence = type === 'win' ? [880, 1320] : [220];
-    const duration = type === 'win' ? 0.18 : 0.4;
-
-    sequence.forEach((freq, index) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.0001, now + index * 0.22);
-        gain.gain.exponentialRampToValueAtTime(0.12, now + index * 0.22 + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.22 + duration);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(now + index * 0.22);
-        osc.stop(now + index * 0.22 + duration);
-    });
-
-    window.setTimeout(() => {
-        ctx.close().catch(() => undefined);
-    }, 1200);
 }
 
 export function initGameUI(options) {
@@ -63,10 +48,25 @@ export function initGameUI(options) {
     const engine = createGameEngine();
     const players = [];
     let winner = null;
-    let history = [];
-    let historySet = new Set();
+    let drawHistory = [];
+    let drawHistorySet = new Set();
     let centralPressTimer = null;
     let centralPressStart = 0;
+    let currentCategory = '';
+    let currentDifficulty = '';
+    let currentScreen = 'home';
+    let loseSfxPlayed = false;
+
+    const screenHome = document.querySelector('#screen-home');
+    const screenGame = document.querySelector('#screen-game');
+    const screenRules = document.querySelector('#screen-rules');
+    const screenControl = document.querySelector('#screen-control');
+
+    const homeCategorySelect = document.querySelector('#home-category');
+    const homeDifficultySelect = document.querySelector('#home-difficulty');
+    const homePlayButton = document.querySelector('#home-play');
+    const homeMessageEl = document.querySelector('[data-home-message]');
+    const homeToggleButtons = Array.from(document.querySelectorAll('[data-player-toggle]'));
 
     const startButton = document.querySelector('#game-start');
     const nextButton = document.querySelector('#game-next');
@@ -79,10 +79,85 @@ export function initGameUI(options) {
     const lastEl = document.querySelector('#game-last');
     const playersListEl = document.querySelector('[data-players-list]');
     const winnerEl = document.querySelector('[data-game-winner]');
-    const colorButtons = Array.from(document.querySelectorAll('[data-player-color]'));
+    const controlColorButtons = Array.from(document.querySelectorAll('[data-player-color]'));
 
+    const gameCentralButton = document.querySelector('[data-game-central]');
+    const gameClaimButtons = Array.from(document.querySelectorAll('[data-claim-color]'));
+    const navButtons = Array.from(document.querySelectorAll('[data-nav]'));
+
+    if (!screenHome || !screenGame || !screenRules || !screenControl) {
+        return;
+    }
     if (!startButton || !nextButton || !pauseButton || !resetButton || !categorySelect || !difficultySelect) {
         return;
+    }
+    if (!homeCategorySelect || !homeDifficultySelect || !homePlayButton || !homeMessageEl) {
+        return;
+    }
+
+    const screens = {
+        home: screenHome,
+        game: screenGame,
+        rules: screenRules,
+        control: screenControl,
+    };
+
+    function showScreen(target, { push = true } = {}) {
+        if (!screens[target]) {
+            return;
+        }
+        currentScreen = target;
+        Object.entries(screens).forEach(([key, el]) => {
+            el.classList.toggle('is-active', key === target);
+        });
+        if (push) {
+            window.history.pushState({ screen: target }, '', `#${target}`);
+        }
+    }
+
+    function setInitialStatuses() {
+        setGameStatus('Jeu : en attente.', 'loading');
+        setDebugStatus('Debug : en attente.', 'loading');
+    }
+
+    function setHomeMessage(message, state) {
+        if (!homeMessageEl) {
+            return;
+        }
+        homeMessageEl.textContent = message;
+        homeMessageEl.classList.remove('is-error', 'is-success');
+        if (state) {
+            homeMessageEl.classList.add(state === 'error' ? 'is-error' : 'is-success');
+        }
+    }
+
+    function syncHomeToControl() {
+        if (homeCategorySelect.value) {
+            categorySelect.value = homeCategorySelect.value;
+        }
+        if (homeDifficultySelect.value) {
+            difficultySelect.value = homeDifficultySelect.value;
+        }
+    }
+
+    function syncControlToHome() {
+        const controlCategory = categorySelect.value === 'all' ? '' : categorySelect.value;
+        homeCategorySelect.value = controlCategory;
+        homeDifficultySelect.value = difficultySelect.value === 'manual' ? '' : (difficultySelect.value ?? '');
+    }
+
+    function getSelectedCategory() {
+        if (currentScreen === 'control') {
+            return categorySelect.value === 'all' ? '' : categorySelect.value;
+        }
+        return homeCategorySelect.value;
+    }
+
+    function getSelectedDifficulty() {
+        if (currentScreen === 'control') {
+            return difficultySelect.value || '';
+        }
+        return homeDifficultySelect.value || '';
     }
 
     function getLogicalState() {
@@ -108,6 +183,12 @@ export function initGameUI(options) {
         if (winnerEl) {
             winnerEl.textContent = winner ?? '—';
         }
+        homeToggleButtons.forEach((button) => {
+            const color = button.getAttribute('data-player-toggle');
+            const isActive = color ? players.includes(color) : false;
+            button.classList.toggle('is-active', isActive);
+            button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
     }
 
     function setControls(state) {
@@ -123,34 +204,55 @@ export function initGameUI(options) {
         pauseButton.textContent = state === 'paused' ? 'Reprendre' : 'Pause';
     }
 
-    function setInitialStatuses() {
-        setGameStatus('Jeu : en attente.', 'loading');
-        setDebugStatus('Debug : en attente.', 'loading');
-    }
-
     function resetRuntimeState() {
-        history = [];
-        historySet = new Set();
+        drawHistory = [];
+        drawHistorySet = new Set();
         winner = null;
+        loseSfxPlayed = false;
         updatePlayersUI();
     }
 
+    function resetHomeUI() {
+        homeCategorySelect.value = '';
+        homeDifficultySelect.value = '';
+        setHomeMessage('Choisissez une catégorie, une difficulté et 2 joueurs.', null);
+        syncHomeToControl();
+        updatePlayersUI();
+    }
+
+    function evaluateHomeReady() {
+        const category = getSelectedCategory();
+        const difficulty = getSelectedDifficulty();
+        if (!category) {
+            return { ok: false, message: 'Choisissez une catégorie.', state: 'error' };
+        }
+        if (!difficulty) {
+            return { ok: false, message: 'Choisissez une difficulté.', state: 'error' };
+        }
+        if (players.length < 2) {
+            return { ok: false, message: 'Sélectionnez au moins 2 joueurs.', state: 'error' };
+        }
+        return { ok: true, message: 'Prêt à jouer.', state: 'success' };
+    }
+
     function canStart() {
+        const category = getSelectedCategory();
+        const difficulty = getSelectedDifficulty();
         if (!planchesValid || !planches) {
             setGameStatus('Démarrage impossible : planches invalides.', 'error');
             setDebugStatus('Planches invalides : corriger le fichier pour démarrer.', 'error');
             return false;
         }
-        if (categorySelect.value === 'all') {
+        if (!category) {
             setGameStatus('Choisissez une catégorie (pas "Tous").', 'error');
             return false;
         }
-        if (!planches[categorySelect.value]) {
+        if (!planches[category]) {
             setGameStatus('Démarrage impossible : planche catégorie absente.', 'error');
-            setDebugStatus(`Planches manquantes pour la catégorie ${categorySelect.value}.`, 'error');
+            setDebugStatus(`Planches manquantes pour la catégorie ${category}.`, 'error');
             return false;
         }
-        if (!difficultySelect.value) {
+        if (!difficulty) {
             setGameStatus('Choisissez une difficulté.', 'error');
             return false;
         }
@@ -172,8 +274,8 @@ export function initGameUI(options) {
             soundSelect.value = sound.id;
         }
         setAudioSource(sound.id);
-        history.push(sound.id);
-        historySet.add(sound.id);
+        drawHistory.push(sound.id);
+        drawHistorySet.add(sound.id);
         updateMeta();
 
         playAudio()
@@ -192,16 +294,25 @@ export function initGameUI(options) {
         }
         setGameStatus('Tous les sons ont été tirés. Personne n’a gagné.', 'success');
         setDebugStatus('Partie terminée sans gagnant.', 'success');
+        if (!loseSfxPlayed) {
+            playSfx(sfxLose);
+            loseSfxPlayed = true;
+        }
     }
 
     function startGame() {
         if (!canStart()) {
-            return;
+            return false;
         }
 
         setInitialStatuses();
-        const category = categorySelect.value;
-        const difficulty = difficultySelect.value;
+        const category = getSelectedCategory();
+        const difficulty = getSelectedDifficulty();
+        currentCategory = category;
+        currentDifficulty = difficulty;
+        categorySelect.value = category;
+        difficultySelect.value = difficulty;
+
         const config = difficultyMap[difficulty] ?? difficultyMap.manual;
         const selectedIds = new Set();
         const categoryPlanches = planches?.[category];
@@ -216,14 +327,14 @@ export function initGameUI(options) {
         if (selectedIds.size === 0) {
             setGameStatus('Démarrage impossible : aucun son pour les joueurs inscrits.', 'error');
             setDebugStatus('Deck joueurs vide : vérifier les planches sélectionnées.', 'error');
-            return;
+            return false;
         }
 
         const filteredMode = catalogue.modes.find((modeEntry) => modeEntry.id === category);
         if (!filteredMode) {
             setGameStatus('Démarrage impossible : catégorie absente du catalogue.', 'error');
             setDebugStatus(`Catalogue incomplet pour la catégorie ${category}.`, 'error');
-            return;
+            return false;
         }
         const filteredSounds = (filteredMode?.sounds ?? []).filter((sound) => selectedIds.has(sound.id));
         const filteredCatalogue = {
@@ -259,6 +370,7 @@ export function initGameUI(options) {
 
         updateMeta();
         setControls(engine.getState());
+        return true;
     }
 
     function drawNextManual() {
@@ -300,19 +412,43 @@ export function initGameUI(options) {
             lastEl.textContent = '—';
         }
         setControls(engine.getState());
+        resetHomeUI();
     }
 
-    function registerPlayer(color) {
+    function addPlayer(color) {
         if (players.includes(color)) {
-            return;
+            return false;
         }
         if (players.length >= 4) {
             setDebugStatus('Maximum 4 joueurs inscrits.', 'error');
-            return;
+            return false;
         }
         players.push(color);
         updatePlayersUI();
-        setDebugStatus(`Joueur inscrit : ${color}.`, 'success');
+        playSfx(sfxChoice);
+        return true;
+    }
+
+    function removePlayer(color) {
+        const index = players.indexOf(color);
+        if (index === -1) {
+            return false;
+        }
+        players.splice(index, 1);
+        updatePlayersUI();
+        playSfx(sfxChoice);
+        return true;
+    }
+
+    function togglePlayer(color) {
+        if (engine.getState() !== 'idle') {
+            return;
+        }
+        if (players.includes(color)) {
+            removePlayer(color);
+        } else {
+            addPlayer(color);
+        }
     }
 
     function claimVictory(color) {
@@ -323,32 +459,32 @@ export function initGameUI(options) {
             setDebugStatus(`Joueur non inscrit : ${color}.`, 'error');
             return;
         }
-        const category = categorySelect.value;
+        const category = currentCategory || getSelectedCategory();
         const planche = planches?.[category]?.[color];
         if (!planche || planche.length === 0) {
             setDebugStatus(`Planche introuvable pour ${category}/${color}.`, 'error');
             return;
         }
-        const hasAll = planche.every((soundId) => historySet.has(soundId));
+        const hasAll = planche.every((soundId) => drawHistorySet.has(soundId));
         if (hasAll) {
             winner = color;
             updatePlayersUI();
             setGameStatus(`Victoire : ${color}.`, 'success');
             setDebugStatus(`Gagnant validé : ${color}.`, 'success');
-            playSignal('win');
+            playSfx(sfxWin);
             engine.finish();
             setControls(engine.getState());
         } else {
             setGameStatus(`Revendication incorrecte : ${color}.`, 'error');
             setDebugStatus(`Revendication incorrecte : ${color}.`, 'error');
-            playSignal('fail');
+            playSfx(sfxLose);
         }
     }
 
-    function handleColorPress(color) {
+    function handleControlColorPress(color) {
         const state = getLogicalState();
         if (state === 'PRET') {
-            registerPlayer(color);
+            addPlayer(color);
             return;
         }
         if (state === 'EN_COURS' || state === 'EN_PAUSE') {
@@ -359,7 +495,10 @@ export function initGameUI(options) {
     function handleCentralShortPress() {
         const state = engine.getState();
         if (state === 'idle') {
-            startGame();
+            const started = startGame();
+            if (started) {
+                showScreen('game');
+            }
             return;
         }
         if (state === 'running' || state === 'paused') {
@@ -367,8 +506,38 @@ export function initGameUI(options) {
         }
     }
 
-    function handleCentralLongPress() {
+    function goHomeReset() {
         resetGame();
+        showScreen('home');
+    }
+
+    function handleCentralLongPress() {
+        goHomeReset();
+    }
+
+    function handleCentralPointerDown(event) {
+        event.preventDefault();
+        centralPressStart = Date.now();
+        centralPressTimer = window.setTimeout(() => {
+            centralPressTimer = null;
+            handleCentralLongPress();
+        }, 5000);
+    }
+
+    function handleCentralPointerUp(event) {
+        if (!centralPressStart) {
+            return;
+        }
+        event.preventDefault();
+        const duration = Date.now() - centralPressStart;
+        if (centralPressTimer) {
+            window.clearTimeout(centralPressTimer);
+            centralPressTimer = null;
+            if (duration < 5000) {
+                handleCentralShortPress();
+            }
+        }
+        centralPressStart = 0;
     }
 
     function onCentralKeyDown(event) {
@@ -403,25 +572,155 @@ export function initGameUI(options) {
                 handleCentralShortPress();
             }
         }
+        centralPressStart = 0;
     }
 
-    startButton.addEventListener('click', startGame);
+    function isGameInProgress() {
+        const state = engine.getState();
+        return state === 'running' || state === 'paused';
+    }
+
+    function onBeforeUnload(event) {
+        if (!isGameInProgress()) {
+            return;
+        }
+        event.preventDefault();
+        event.returnValue = 'La partie sera interrompue et perdue.';
+        return event.returnValue;
+    }
+
+    function onPopState() {
+        if (!isGameInProgress()) {
+            return;
+        }
+        const confirmed = window.confirm('La partie sera interrompue et perdue.');
+        if (confirmed) {
+            goHomeReset();
+            window.history.replaceState({ screen: 'home' }, '', '#home');
+        } else {
+            window.history.pushState({ screen: currentScreen }, '', `#${currentScreen}`);
+        }
+    }
+
+    function bindNavigationGuards() {
+        window.history.replaceState({ screen: 'home' }, '', '#home');
+        window.addEventListener('beforeunload', onBeforeUnload);
+        window.addEventListener('popstate', onPopState);
+    }
+
+    function bindNavigation() {
+        navButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const target = button.getAttribute('data-nav');
+                if (target === 'home') {
+                    goHomeReset();
+                    return;
+                }
+                if (target === 'rules') {
+                    showScreen('rules');
+                    return;
+                }
+                if (target === 'control') {
+                    showScreen('control');
+                }
+            });
+        });
+    }
+
+    function updateHomeFeedback() {
+        const result = evaluateHomeReady();
+        setHomeMessage(result.message, result.state);
+    }
+
+    homeCategorySelect.addEventListener('change', () => {
+        syncHomeToControl();
+        updateHomeFeedback();
+    });
+
+    homeDifficultySelect.addEventListener('change', () => {
+        syncHomeToControl();
+        updateHomeFeedback();
+    });
+
+    homeToggleButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const color = button.getAttribute('data-player-toggle');
+            if (!color || !colors.includes(color)) {
+                return;
+            }
+            togglePlayer(color);
+            updateHomeFeedback();
+        });
+    });
+
+    homePlayButton.addEventListener('click', () => {
+        const result = evaluateHomeReady();
+        setHomeMessage(result.message, result.state);
+        if (!result.ok) {
+            return;
+        }
+        const started = startGame();
+        if (started) {
+            showScreen('game');
+        }
+    });
+
+    categorySelect.addEventListener('change', () => {
+        syncControlToHome();
+        updateHomeFeedback();
+    });
+
+    difficultySelect.addEventListener('change', () => {
+        syncControlToHome();
+        updateHomeFeedback();
+    });
+
+    startButton.addEventListener('click', () => {
+        const started = startGame();
+        if (started) {
+            showScreen('game');
+        }
+    });
     nextButton.addEventListener('click', drawNextManual);
     pauseButton.addEventListener('click', togglePause);
     resetButton.addEventListener('click', resetGame);
-    colorButtons.forEach((button) => {
+
+    controlColorButtons.forEach((button) => {
         button.addEventListener('click', () => {
             const color = button.getAttribute('data-player-color');
             if (color && colors.includes(color)) {
-                handleColorPress(color);
+                handleControlColorPress(color);
+                updateHomeFeedback();
             }
         });
     });
+
+    gameClaimButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const color = button.getAttribute('data-claim-color');
+            if (color && colors.includes(color)) {
+                claimVictory(color);
+            }
+        });
+    });
+
+    if (gameCentralButton) {
+        gameCentralButton.addEventListener('pointerdown', handleCentralPointerDown);
+        gameCentralButton.addEventListener('pointerup', handleCentralPointerUp);
+        gameCentralButton.addEventListener('pointercancel', handleCentralPointerUp);
+        gameCentralButton.addEventListener('pointerleave', handleCentralPointerUp);
+    }
+
     document.addEventListener('keydown', onCentralKeyDown);
     document.addEventListener('keyup', onCentralKeyUp);
 
+    bindNavigation();
+    bindNavigationGuards();
+    resetHomeUI();
+    setInitialStatuses();
     startButton.disabled = false;
     updatePlayersUI();
     setControls(engine.getState());
     updateMeta();
+    showScreen('home', { push: false });
 }

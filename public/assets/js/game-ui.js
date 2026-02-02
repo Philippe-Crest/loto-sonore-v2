@@ -86,6 +86,9 @@ export function initGameUI(options) {
     let currentDifficulty = '';
     let currentScreen = 'home';
     let loseSfxPlayed = false;
+    let activePointerId = null;
+    const lastActionAt = new Map();
+    const EJ_THROTTLE_MS = 250;
 
     const screenHome = document.querySelector('#screen-home');
     const screenGame = document.querySelector('#screen-game');
@@ -227,6 +230,7 @@ export function initGameUI(options) {
         pauseButton.disabled = engine.getMode() !== 'auto' || (state !== 'running' && state !== 'paused') || isFinished;
         resetButton.disabled = false;
         pauseButton.textContent = state === 'paused' ? 'Reprendre' : 'Pause';
+        screenGame.classList.toggle('is-paused', state === 'paused');
     }
 
     function resetRuntimeState() {
@@ -555,6 +559,9 @@ export function initGameUI(options) {
     }
 
     function handleCentralShortPress() {
+        if (shouldThrottle('central')) {
+            return;
+        }
         const state = engine.getState();
         if (state === 'idle') {
             const started = startGame();
@@ -568,17 +575,69 @@ export function initGameUI(options) {
         }
     }
 
+    function canProcessPointer(event) {
+        if (event.pointerId === undefined || event.pointerId === null) {
+            return activePointerId === null;
+        }
+        if (activePointerId !== null) {
+            return false;
+        }
+        activePointerId = event.pointerId;
+        return true;
+    }
+
+    function releasePointer(event) {
+        if (activePointerId === null) {
+            return;
+        }
+        if (event.pointerId === undefined || event.pointerId === null || event.pointerId === activePointerId) {
+            activePointerId = null;
+        }
+    }
+
+    function shouldThrottle(actionKey) {
+        const now = Date.now();
+        const last = lastActionAt.get(actionKey) ?? 0;
+        if (now - last < EJ_THROTTLE_MS) {
+            return true;
+        }
+        lastActionAt.set(actionKey, now);
+        return false;
+    }
+
+    function setPressedState(button, pressed) {
+        if (!button) {
+            return;
+        }
+        button.classList.toggle('is-pressed', pressed);
+    }
+
+    function setCentralHoldState(pressed) {
+        if (!gameCentralButton) {
+            return;
+        }
+        gameCentralButton.classList.toggle('is-hold', pressed);
+    }
+
     function goHomeReset() {
         resetGame();
         showScreen('home');
     }
 
     function handleCentralLongPress() {
+        setCentralHoldState(false);
+        activePointerId = null;
         goHomeReset();
     }
 
     function handleCentralPointerDown(event) {
+        if (!canProcessPointer(event)) {
+            return;
+        }
         event.preventDefault();
+        lastActionAt.set('ej-touch', Date.now());
+        setPressedState(gameCentralButton, true);
+        setCentralHoldState(true);
         centralPressStart = Date.now();
         centralPressTimer = window.setTimeout(() => {
             centralPressTimer = null;
@@ -588,6 +647,7 @@ export function initGameUI(options) {
 
     function handleCentralPointerUp(event) {
         if (!centralPressStart) {
+            releasePointer(event);
             return;
         }
         event.preventDefault();
@@ -600,6 +660,25 @@ export function initGameUI(options) {
             }
         }
         centralPressStart = 0;
+        setCentralHoldState(false);
+        setPressedState(gameCentralButton, false);
+        releasePointer(event);
+    }
+
+    function handleCentralPointerCancel(event) {
+        if (!centralPressStart) {
+            releasePointer(event);
+            return;
+        }
+        event.preventDefault();
+        if (centralPressTimer) {
+            window.clearTimeout(centralPressTimer);
+            centralPressTimer = null;
+        }
+        centralPressStart = 0;
+        setCentralHoldState(false);
+        setPressedState(gameCentralButton, false);
+        releasePointer(event);
     }
 
     function onCentralKeyDown(event) {
@@ -635,6 +714,28 @@ export function initGameUI(options) {
             }
         }
         centralPressStart = 0;
+    }
+
+    function onControlKeyDown(event) {
+        if (currentScreen !== 'control') {
+            return;
+        }
+        if (event.code !== 'Space' && event.key !== ' ') {
+            return;
+        }
+        const target = event.target;
+        if (!target || !(target instanceof HTMLElement)) {
+            return;
+        }
+        const tag = target.tagName;
+        if (['INPUT', 'SELECT', 'TEXTAREA'].includes(tag)) {
+            return;
+        }
+        if (tag !== 'BUTTON' && target.getAttribute('role') !== 'button') {
+            return;
+        }
+        event.preventDefault();
+        target.click();
     }
 
     function isGameInProgress() {
@@ -761,21 +862,40 @@ export function initGameUI(options) {
     });
 
     gameClaimButtons.forEach((button) => {
-        button.addEventListener('click', () => {
+        button.addEventListener('pointerdown', (event) => {
+            if (!canProcessPointer(event)) {
+                return;
+            }
+            event.preventDefault();
+            lastActionAt.set('ej-touch', Date.now());
+            setPressedState(button, true);
+        });
+        const endPress = (event) => {
+            setPressedState(button, false);
+            releasePointer(event);
+        };
+        button.addEventListener('pointerup', (event) => {
+            endPress(event);
             const color = button.getAttribute('data-claim-color');
             if (color && colors.includes(color)) {
+                if (shouldThrottle(`claim-${color}`)) {
+                    return;
+                }
                 void claimVictory(color);
             }
         });
+        button.addEventListener('pointercancel', endPress);
+        button.addEventListener('pointerleave', endPress);
     });
 
     if (gameCentralButton) {
         gameCentralButton.addEventListener('pointerdown', handleCentralPointerDown);
         gameCentralButton.addEventListener('pointerup', handleCentralPointerUp);
-        gameCentralButton.addEventListener('pointercancel', handleCentralPointerUp);
-        gameCentralButton.addEventListener('pointerleave', handleCentralPointerUp);
+        gameCentralButton.addEventListener('pointercancel', handleCentralPointerCancel);
+        gameCentralButton.addEventListener('pointerleave', handleCentralPointerCancel);
     }
 
+    screenControl.addEventListener('keydown', onControlKeyDown);
     document.addEventListener('keydown', onCentralKeyDown);
     document.addEventListener('keyup', onCentralKeyUp);
 

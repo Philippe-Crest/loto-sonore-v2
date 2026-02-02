@@ -132,18 +132,13 @@ export function initGameUI(options) {
     }
 
     function syncHomeToControl() {
-        if (homeCategorySelect.value) {
-            categorySelect.value = homeCategorySelect.value;
-        }
-        if (homeDifficultySelect.value) {
-            difficultySelect.value = homeDifficultySelect.value;
-        }
+        categorySelect.value = homeCategorySelect.value || '';
+        difficultySelect.value = homeDifficultySelect.value || '';
     }
 
     function syncControlToHome() {
-        const controlCategory = categorySelect.value === 'all' ? '' : categorySelect.value;
-        homeCategorySelect.value = controlCategory;
-        homeDifficultySelect.value = difficultySelect.value === 'manual' ? '' : (difficultySelect.value ?? '');
+        homeCategorySelect.value = categorySelect.value || '';
+        homeDifficultySelect.value = difficultySelect.value === 'manual' ? '' : (difficultySelect.value || '');
     }
 
     function getSelectedCategory() {
@@ -244,7 +239,7 @@ export function initGameUI(options) {
             return false;
         }
         if (!category) {
-            setGameStatus('Choisissez une catégorie (pas "Tous").', 'error');
+            setGameStatus('Choisissez une catégorie.', 'error');
             return false;
         }
         if (!planches[category]) {
@@ -677,7 +672,10 @@ export function initGameUI(options) {
 
     startButton.addEventListener('click', () => {
         const started = startGame();
-        if (started) {
+        if (!started) {
+            return;
+        }
+        if (currentScreen !== 'control') {
             showScreen('game');
         }
     });

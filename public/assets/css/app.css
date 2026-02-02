@@ -116,19 +116,19 @@ body {
 }
 
 .player-toggle--rouge {
-    background: #d94a4a;
+    background: rgb(197, 0, 44);
 }
 
 .player-toggle--bleu {
-    background: #4a77d9;
+    background: rgb(0, 131, 255);
 }
 
 .player-toggle--vert {
-    background: #4aaa6a;
+    background: rgb(10, 166, 28);
 }
 
 .player-toggle--jaune {
-    background: #f1b24a;
+    background: rgb(255, 255, 0);
 }
 
 .home__play {
@@ -170,28 +170,28 @@ body {
 }
 
 .game-pad--rouge {
-    background: #d94a4a;
+    background: rgb(197, 0, 44);
     top: 0;
     left: 0;
     border-radius: 0 0 100% 0;
 }
 
 .game-pad--bleu {
-    background: #4a77d9;
+    background: rgb(0, 131, 255);
     top: 0;
     right: 0;
     border-radius: 0 0 0 100%;
 }
 
 .game-pad--vert {
-    background: #4aaa6a;
+    background: rgb(10, 166, 28);
     bottom: 0;
     left: 0;
     border-radius: 0 100% 0 0;
 }
 
 .game-pad--jaune {
-    background: #f1b24a;
+    background: rgb(255, 255, 0);
     bottom: 0;
     right: 0;
     border-radius: 100% 0 0 0;
@@ -200,7 +200,7 @@ body {
 .game-pad--center {
     width: clamp(160px, 40vw, 280px);
     height: clamp(160px, 40vw, 280px);
-    background: #f08a2b;
+    background: rgb(255, 115, 0);
     border-radius: 50%;
     left: 50%;
     top: 50%;
@@ -411,6 +411,26 @@ body {
     display: grid;
     gap: 10px;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.game__colors [data-player-color="rouge"] {
+    background: rgb(197, 0, 44);
+    color: #fff;
+}
+
+.game__colors [data-player-color="bleu"] {
+    background: rgb(0, 131, 255);
+    color: #fff;
+}
+
+.game__colors [data-player-color="vert"] {
+    background: rgb(10, 166, 28);
+    color: #fff;
+}
+
+.game__colors [data-player-color="jaune"] {
+    background: rgb(255, 255, 0);
+    color: #1b1b1b;
 }
 
 .btn {

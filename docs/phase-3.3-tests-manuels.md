@@ -44,6 +44,11 @@
 
 - [ ] Interface debug visible, fonctionnalité inchangée.
 - [ ] Statuts/debug restent visibles uniquement en EC.
+- [ ] Catégorie : pas de “Tous”, placeholder “Choisir une catégorie” par défaut.
+- [ ] Difficulté : placeholder “Choisir une difficulté” par défaut + option “Manuel” disponible.
+- [ ] En EC, cliquer “Démarrer” démarre le jeu sans quitter EC.
+- [ ] En EC + Manuel : “Tirage suivant” devient utilisable.
+- [ ] En EC + Auto : “Pause” devient utilisable.
 
 ## Navigation navigateur
 

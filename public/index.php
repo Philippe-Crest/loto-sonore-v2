@@ -134,7 +134,7 @@ header('X-Robots-Tag: noindex, nofollow');
                                 <div class="field">
                                     <label for="game-category">Catégorie</label>
                                     <select id="game-category" name="game-category">
-                                        <option value="all">Tous</option>
+                                        <option value="" selected>Choisir une catégorie</option>
                                         <option value="animaux">Animaux</option>
                                         <option value="bruits_familiers">Bruits familiers</option>
                                     </select>
@@ -143,6 +143,7 @@ header('X-Robots-Tag: noindex, nofollow');
                                 <div class="field">
                                     <label for="game-difficulty">Difficulté</label>
                                     <select id="game-difficulty" name="game-difficulty">
+                                        <option value="" selected>Choisir une difficulté</option>
                                         <option value="manual">Manuel</option>
                                         <option value="auto-slow">Automatique lent</option>
                                         <option value="auto-normal">Automatique normal</option>

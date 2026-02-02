@@ -30,6 +30,33 @@ function playSfx(audio) {
     }
 }
 
+function playSfxAndWait(audio) {
+    return new Promise((resolve) => {
+        let onEnded;
+        try {
+            audio.pause();
+            audio.currentTime = 0;
+            onEnded = () => {
+                audio.removeEventListener('ended', onEnded);
+                resolve();
+            };
+            audio.addEventListener('ended', onEnded, { once: true });
+            const result = audio.play();
+            if (result && typeof result.catch === 'function') {
+                result.catch(() => {
+                    audio.removeEventListener('ended', onEnded);
+                    resolve();
+                });
+            }
+        } catch (_) {
+            if (onEnded) {
+                audio.removeEventListener('ended', onEnded);
+            }
+            resolve();
+        }
+    });
+}
+
 export function initGameUI(options) {
     const {
         catalogue,
@@ -43,6 +70,9 @@ export function initGameUI(options) {
         setGameStatus,
         setDebugStatus,
         soundSelect,
+        isMainAudioPlaying,
+        waitForMainAudioToEnd,
+        waitForMainAudioToPause,
     } = options;
 
     const engine = createGameEngine();
@@ -283,16 +313,23 @@ export function initGameUI(options) {
             });
     }
 
-    function finishWithoutWinner() {
+    async function finishWithoutWinner() {
         if (winner) {
             return;
         }
         setGameStatus('Tous les sons ont été tirés. Personne n’a gagné.', 'success');
         setDebugStatus('Partie terminée sans gagnant.', 'success');
-        if (!loseSfxPlayed) {
-            playSfx(sfxLose);
-            loseSfxPlayed = true;
+        if (loseSfxPlayed) {
+            return;
         }
+        loseSfxPlayed = true;
+        if (waitForMainAudioToEnd) {
+            await waitForMainAudioToEnd();
+        }
+        if (winner) {
+            return;
+        }
+        await playSfxAndWait(sfxLose);
     }
 
     function startGame() {
@@ -352,7 +389,7 @@ export function initGameUI(options) {
             intervalMs: config.intervalMs,
             onDraw: handleDraw,
             onFinish: () => {
-                finishWithoutWinner();
+                void finishWithoutWinner();
                 setControls(engine.getState());
             },
         });
@@ -371,7 +408,7 @@ export function initGameUI(options) {
     function drawNextManual() {
         const drawn = engine.drawNext();
         if (!drawn && !winner) {
-            finishWithoutWinner();
+            void finishWithoutWinner();
         }
         updateMeta();
         setControls(engine.getState());
@@ -446,7 +483,37 @@ export function initGameUI(options) {
         }
     }
 
-    function claimVictory(color) {
+    async function playExclusiveSfx(sfxAudio) {
+        const wasMainPlaying = isMainAudioPlaying?.() === true;
+        const wasEngineRunning = engine.getState() === 'running';
+
+        if (wasEngineRunning) {
+            engine.pause();
+            setControls(engine.getState());
+        }
+
+        if (wasMainPlaying) {
+            pauseAudio?.();
+            await waitForMainAudioToPause?.();
+        }
+
+        await playSfxAndWait(sfxAudio);
+
+        if (!isGameInProgress()) {
+            return;
+        }
+
+        if (wasEngineRunning) {
+            engine.resume();
+            setControls(engine.getState());
+        }
+
+        if (wasMainPlaying) {
+            await resumeAudio?.();
+        }
+    }
+
+    async function claimVictory(color) {
         if (engine.getState() !== 'running' && engine.getState() !== 'paused') {
             return;
         }
@@ -466,13 +533,13 @@ export function initGameUI(options) {
             updatePlayersUI();
             setGameStatus(`Victoire : ${color}.`, 'success');
             setDebugStatus(`Gagnant validé : ${color}.`, 'success');
-            playSfx(sfxWin);
             engine.finish();
             setControls(engine.getState());
+            await playExclusiveSfx(sfxWin);
         } else {
             setGameStatus(`Revendication incorrecte : ${color}.`, 'error');
             setDebugStatus(`Revendication incorrecte : ${color}.`, 'error');
-            playSfx(sfxLose);
+            await playExclusiveSfx(sfxLose);
         }
     }
 
@@ -483,7 +550,7 @@ export function initGameUI(options) {
             return;
         }
         if (state === 'EN_COURS' || state === 'EN_PAUSE') {
-            claimVictory(color);
+            void claimVictory(color);
         }
     }
 
@@ -697,7 +764,7 @@ export function initGameUI(options) {
         button.addEventListener('click', () => {
             const color = button.getAttribute('data-claim-color');
             if (color && colors.includes(color)) {
-                claimVictory(color);
+                void claimVictory(color);
             }
         });
     });

@@ -65,6 +65,45 @@ function resumeAudio() {
     return Promise.resolve();
 }
 
+function isMainAudioPlaying() {
+    return Boolean(
+        audioPlayer
+            && !audioPlayer.paused
+            && !audioPlayer.ended
+            && audioPlayer.currentTime > 0,
+    );
+}
+
+function waitForMainAudioToEnd() {
+    if (!audioPlayer || audioPlayer.ended || audioPlayer.paused) {
+        return Promise.resolve();
+    }
+    return new Promise((resolve) => {
+        const onEnded = () => {
+            audioPlayer.removeEventListener('ended', onEnded);
+            resolve();
+        };
+        audioPlayer.addEventListener('ended', onEnded, { once: true });
+    });
+}
+
+function waitForMainAudioToPause() {
+    if (!audioPlayer || audioPlayer.paused) {
+        return Promise.resolve();
+    }
+    return new Promise((resolve) => {
+        const onPause = () => {
+            audioPlayer.removeEventListener('pause', onPause);
+            resolve();
+        };
+        audioPlayer.addEventListener('pause', onPause, { once: true });
+        window.setTimeout(() => {
+            audioPlayer.removeEventListener('pause', onPause);
+            resolve();
+        }, 250);
+    });
+}
+
 function resetAudio() {
     if (!audioPlayer) {
         return;
@@ -203,6 +242,9 @@ function setAudioSource(soundId) {
             setGameStatus,
             setDebugStatus,
             soundSelect,
+            isMainAudioPlaying,
+            waitForMainAudioToEnd,
+            waitForMainAudioToPause,
         });
     } catch (error) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue.';

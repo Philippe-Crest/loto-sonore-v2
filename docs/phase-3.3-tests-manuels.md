@@ -63,3 +63,13 @@
 - [ ] Victoire validée → `victoire.mp3`
 - [ ] Revendication incorrecte → `defaite.mp3`
 - [ ] Fin sans gagnant → `defaite.mp3`
+
+## Audio SFX (exclusif + fin de deck)
+
+- [ ] En EJ, lancer un son long, appuyer sur une couleur → son principal en pause, SFX joué, reprise au même endroit.
+- [ ] En EJ, un appui couleur ne chevauche jamais le son principal : pause confirmée puis reprise au même timestamp.
+- [ ] Revendication incorrecte → même comportement (pause → SFX défaite → reprise).
+- [ ] Épuiser le deck sans gagnant → `defaite.mp3` joue après la fin du tout dernier son.
+- [ ] Revendication “sur le fil” possible avant la fin du dernier son (SFX défaite ne se déclenche qu’après).
+- [ ] En auto rapide, pendant le SFX, aucun tirage suivant ne se déclenche.
+- [ ] Après la fin du SFX, le jeu reprend au bon rythme (tirage suivant après reprise moteur).

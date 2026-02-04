@@ -170,9 +170,7 @@ function setAudioSource(soundId) {
 
 (async () => {
     try {
-        console.log('app ready');
         const { catalogue, total } = await loadCatalogue();
-        console.log(`catalogue loaded: ${total}`);
         setStatus(`Catalogue : ${total} sons chargés`, 'success');
         setDebugStatus('Debug : en attente.', 'loading');
 

@@ -26,7 +26,6 @@ function playSfx(audio) {
         audio.currentTime = 0;
         audio.play();
     } catch (_) {
-        // fail silent
     }
 }
 

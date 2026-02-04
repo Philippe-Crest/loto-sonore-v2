@@ -168,6 +168,9 @@ function setAudioSource(soundId) {
     audioPlayer.load();
 }
 
+// Choix projet : conserver un console.error global en cas d’échec critique
+// de chargement (diagnostic terrain).
+// Aucun fallback silencieux n’est appliqué ici par conception.
 (async () => {
     try {
         const { catalogue, total } = await loadCatalogue();

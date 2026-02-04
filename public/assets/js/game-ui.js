@@ -317,6 +317,9 @@ export function initGameUI(options) {
             });
     }
 
+    // Arbitrage UX : la défaite est jouée après la fin du dernier son,
+    // afin de permettre une revendication "sur le fil".
+    // Ce comportement est intentionnel et validé pédagogiquement.
     async function finishWithoutWinner() {
         if (winner) {
             return;
@@ -487,6 +490,11 @@ export function initGameUI(options) {
         }
     }
 
+    // Intention : garantir une écoute exclusive des SFX.
+    // Le moteur et le son principal sont volontairement mis en pause
+    // pendant un SFX pour éviter toute superposition sonore.
+    // ⚠️ Zone sensible : toute modification ici doit être validée
+    // par des tests manuels de revendication (EJ) et de fin de deck.
     async function playExclusiveSfx(sfxAudio) {
         const wasMainPlaying = isMainAudioPlaying?.() === true;
         const wasEngineRunning = engine.getState() === 'running';
@@ -558,6 +566,11 @@ export function initGameUI(options) {
         }
     }
 
+    // Intention : le bouton central combine pause/reprise (appui court)
+    // et réinitialisation (appui long).
+    // ⚠️ Ne pas refactorer sans vérifier :
+    // - appui court ≠ reset
+    // - appui long (durée) stable sur interfaces tactiles.
     function handleCentralShortPress() {
         if (shouldThrottle('central')) {
             return;
@@ -783,6 +796,9 @@ export function initGameUI(options) {
                     showScreen('rules');
                     return;
                 }
+                // Convention : "EC" (Écran de Contrôle) est un terme interne.
+                // Le libellé utilisateur est "Découvrir" pour rester compréhensible
+                // par les enfants et les professionnels non techniques.
                 if (target === 'control') {
                     showScreen('control');
                 }

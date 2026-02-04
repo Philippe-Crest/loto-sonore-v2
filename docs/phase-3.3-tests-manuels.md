@@ -13,7 +13,7 @@
 - [ ] Au chargement : écran EA visible, aucun autre écran affiché.
 - [ ] EA → Règles : bouton "Règles" affiche ER.
 - [ ] ER → EA : bouton retour revient à EA et reset complet.
-- [ ] EA → Contrôle : bouton "Contrôle" affiche EC.
+- [ ] EA → Découvrir : bouton "Découvrir" affiche EC.
 - [ ] EC → EA : bouton "Retour au jeu" revient à EA et reset complet.
 
 ## Sélection joueurs (EA)
@@ -37,7 +37,7 @@
 ## Boutons jeu (EJ)
 
 - [ ] Appui court central → pause/reprise.
-- [ ] Appui long central (~5s) → reset complet + retour EA.
+- [ ] Appui long central (~3s) → reset complet + retour EA.
 - [ ] Appui sur un bouton couleur → revendication de victoire.
 
 ## Contrôle (EC)

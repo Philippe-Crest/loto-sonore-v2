@@ -25,8 +25,8 @@
 
 ## EJ — Reset long (progression visuelle)
 
-- [ ] Appui long central (~5s) : progression visuelle continue visible.
-- [ ] Relâchement avant 5s : progression annulée, retour visuel normal.
+- [ ] Appui long central (~3s) : progression visuelle continue visible.
+- [ ] Relâchement avant 3s : progression annulée, retour visuel normal.
 - [ ] Seuil atteint : reset déclenché comme attendu.
 
 ## EJ — Robustesse tactile

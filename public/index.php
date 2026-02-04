@@ -1,10 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 header('X-Robots-Tag: noindex, nofollow');
 
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,12 +15,13 @@ header('X-Robots-Tag: noindex, nofollow');
     <title>Loto Sonore V2</title>
     <link rel="stylesheet" href="/assets/css/app.css">
 </head>
+
 <body>
     <main class="app">
         <section id="screen-home" class="screen screen--home is-active">
             <header class="home__header">
                 <div class="home__top">
-                    <button class="btn btn--ghost btn--small btn--control" type="button" data-nav="control">Contrôle</button>
+                    <button class="btn btn--ghost btn--small btn--control" type="button" data-nav="control">Découvrir</button>
                 </div>
                 <div class="home__title-row">
                     <h1 class="home__title">Loto Sonore</h1>
@@ -28,7 +32,7 @@ header('X-Robots-Tag: noindex, nofollow');
 
             <div class="home__body">
                 <div class="field">
-                    <label for="home-category">Catégorie</label>
+                    <label for="home-category">Découvrir</label>
                     <select id="home-category" name="home-category">
                         <option value="">Choisir une catégorie</option>
                         <option value="animaux">Animaux</option>
@@ -81,9 +85,11 @@ header('X-Robots-Tag: noindex, nofollow');
             <div class="rules">
                 <button class="btn btn--ghost btn--small" type="button" data-nav="home">Retour</button>
                 <h2>Loto Sonore</h2>
-                <p>Le loto sonore se joue de 2 à 4 joueurs. Choisissez une catégorie (animaux ou bruits familiers) et une vitesse (lent, normal, rapide), puis inscrivez les joueurs par couleur.</p>
-                <p>Les sons sont tirés au hasard, sans répétition. À chaque son, les joueurs ferment le volet correspondant sur leur planche. Un joueur gagne si tous les sons de sa planche ont été entendus.</p>
-                <p>Si tous les sons passent sans gagnant, la partie est perdue pour tous.</p>
+                <p>Le loto sonore se joue de 2 à 4 joueurs. <br /> Choisissez une catégorie (animaux ou bruits familiers) et une vitesse (lent, normal, rapide), puis inscrivez les joueurs par couleur.</p>
+                <p>Cliquez sur jouer pour commencer la partie.</p>
+                <p>Les sons sont tirés au hasard, sans répétition. <br /> À chaque son, les joueurs et joueuses ferment le volet correspondant sur leur planche. </p>
+                <p>Quand un joueur ou une joueuse pense que tous les sons de sa planche ont été entendus, il ou elle touche sa couleur sur l'écran pour obtenir la victoire. <br /> S'il ou elle a raison le son de la victoire retenti, sinon le son défait retenti et la partie continue pour tous les joueurs et joueuses.</p>
+                <p>Si tous les sons passent sans gagnant.e, la partie s'arrête avec le son de la défaite.</p>
                 <p>Développeur : Philippe Crest.</p>
                 <p>Sons utilisés : domaine public / libre de droit.</p>
                 <p>Adaptation web du boîtier du jeu <em>Loto Sonore</em> de l’éditeur Nathan, afin d’avoir des sons de meilleure qualité.</p>
@@ -95,7 +101,7 @@ header('X-Robots-Tag: noindex, nofollow');
         <section id="screen-control" class="screen screen--control">
             <div class="control">
                 <div class="control__header">
-                    <h2>Contrôle</h2>
+                    <h2>Découvrir</h2>
                     <button class="btn btn--ghost btn--small" type="button" data-nav="home">Retour au jeu</button>
                 </div>
 
@@ -200,4 +206,5 @@ header('X-Robots-Tag: noindex, nofollow');
 
     <script type="module" src="/assets/js/app.js"></script>
 </body>
+
 </html>

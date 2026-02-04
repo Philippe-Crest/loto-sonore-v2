@@ -89,6 +89,7 @@ export function initGameUI(options) {
     let activePointerId = null;
     const lastActionAt = new Map();
     const EJ_THROTTLE_MS = 250;
+    const CENTRAL_RESET_HOLD_MS = 3000;
 
     const screenHome = document.querySelector('#screen-home');
     const screenGame = document.querySelector('#screen-game');
@@ -642,7 +643,7 @@ export function initGameUI(options) {
         centralPressTimer = window.setTimeout(() => {
             centralPressTimer = null;
             handleCentralLongPress();
-        }, 5000);
+        }, CENTRAL_RESET_HOLD_MS);
     }
 
     function handleCentralPointerUp(event) {
@@ -655,7 +656,7 @@ export function initGameUI(options) {
         if (centralPressTimer) {
             window.clearTimeout(centralPressTimer);
             centralPressTimer = null;
-            if (duration < 5000) {
+            if (duration < CENTRAL_RESET_HOLD_MS) {
                 handleCentralShortPress();
             }
         }
@@ -697,7 +698,7 @@ export function initGameUI(options) {
         centralPressTimer = window.setTimeout(() => {
             centralPressTimer = null;
             handleCentralLongPress();
-        }, 5000);
+        }, CENTRAL_RESET_HOLD_MS);
     }
 
     function onCentralKeyUp(event) {
@@ -709,7 +710,7 @@ export function initGameUI(options) {
         if (centralPressTimer) {
             window.clearTimeout(centralPressTimer);
             centralPressTimer = null;
-            if (duration < 5000) {
+            if (duration < CENTRAL_RESET_HOLD_MS) {
                 handleCentralShortPress();
             }
         }

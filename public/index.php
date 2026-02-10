@@ -90,11 +90,12 @@ header('X-Robots-Tag: noindex, nofollow');
             <div class="rules">
                 <button class="btn btn--ghost btn--small" type="button" data-nav="home">Retour</button>
                 <h2>Loto Sonore</h2>
-                <p>Le loto sonore se joue de 2 à 4 joueurs. <br /> Choisissez une catégorie (animaux ou bruits familiers) et une vitesse (lent, normal, rapide), puis inscrivez les joueurs par couleur.</p>
+                <p>Le loto sonore se joue de 2 à 4 joueurs. <br /> Choisissez une catégorie (animaux ou bruits familiers) et une vitesse (lent, normal, rapide), puis les enfants s'inscrivent en touchant une couleur.</p>
                 <p>Cliquez sur jouer pour commencer la partie.</p>
-                <p>Les sons sont tirés au hasard, sans répétition. <br /> À chaque son, les joueurs et joueuses ferment le volet correspondant sur leur planche. </p>
-                <p>Quand un joueur ou une joueuse pense que tous les sons de sa planche ont été entendus, il ou elle touche sa couleur sur l'écran pour obtenir la victoire. <br /> S'il ou elle a raison le son de la victoire retenti, sinon le son défait retenti et la partie continue pour tous les joueurs et joueuses.</p>
-                <p>Si tous les sons passent sans gagnant.e, la partie s'arrête avec le son de la défaite.</p>
+                <p>Les sons sont tirés au hasard, sans répétition. <br /> L'enfant ferment sur sa planche le volet du son qu'il a reconnu.</p>
+                <p>Quand un enfant pense que tous les sons de sa planche ont été joués, il touche sa couleur sur l'écran pour obtenir la victoire. <br />Le son de la victoire ou défait retenti selon qu'il ait raison ou tord et la partie continue pour tous les participant.es.</p>
+                <p>Quand tous les sons sont joués sans qu'un enfant ait réclamé la victoire, la partie s'arrête et le son de la défaite retenti.</p>
+                <p>Le bouton central orange permet de mettre le jeu en pause et un appui prolongé (4s) sur ce bouton arrête le jeu et revient à la page d'accueil du jeu.</p>
                 <p>Développeur : Philippe Crest.</p>
                 <p>Sons utilisés : domaine public / libre de droit.</p>
                 <p>Adaptation web du boîtier du jeu <em>Loto Sonore</em> de l’éditeur Nathan, afin d’avoir des sons de meilleure qualité.</p>

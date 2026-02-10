@@ -69,6 +69,19 @@ body {
     --gap: clamp(10px, 3vmin, 26px);
 }
 
+#screen-game,
+#screen-game * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+#screen-game button,
+#screen-game .game-pad {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
 @media (orientation: landscape) {
     #screen-game {
         --btn: clamp(160px, 35vmin, 290px);

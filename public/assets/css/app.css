@@ -59,6 +59,23 @@ body {
         var(--bg);
 }
 
+#screen-game {
+    min-height: 100dvh;
+    padding: max(2px, env(safe-area-inset-top))
+        max(2px, env(safe-area-inset-right))
+        max(2px, env(safe-area-inset-bottom))
+        max(2px, env(safe-area-inset-left));
+    --btn: clamp(160px, 35vmin, 290px);
+    --gap: clamp(10px, 3vmin, 26px);
+}
+
+@media (orientation: landscape) {
+    #screen-game {
+        --btn: clamp(160px, 35vmin, 290px);
+        --gap: clamp(10px, 3vmin, 26px);
+    }
+}
+
 .home__header {
     display: grid;
     gap: 16px;
@@ -162,7 +179,7 @@ body {
     background: rgba(110, 187, 161, 0.16);
 }
 
-.game-pad {
+#screen-game .game-pad {
     appearance: none;
     border: none;
     position: absolute;
@@ -170,6 +187,8 @@ body {
     touch-action: none;
     user-select: none;
     transition: transform 0.08s ease, filter 0.08s ease, box-shadow 0.08s ease;
+    max-width: calc(50vmin - var(--gap));
+    max-height: calc(50vmin - var(--gap));
 }
 
 .game-pad.is-pressed {
@@ -193,41 +212,41 @@ body {
 }
 
 .game-pad--corner {
-    width: clamp(140px, 28vw, 240px);
-    height: clamp(140px, 28vw, 240px);
+    width: var(--btn);
+    height: var(--btn);
 }
 
 .game-pad--rouge {
     background: rgb(197, 0, 44);
-    top: 0;
-    left: 0;
+    top: var(--gap);
+    left: var(--gap);
     border-radius: 0 0 100% 0;
 }
 
 .game-pad--bleu {
     background: rgb(0, 131, 255);
-    top: 0;
-    right: 0;
+    top: var(--gap);
+    right: var(--gap);
     border-radius: 0 0 0 100%;
 }
 
 .game-pad--vert {
     background: rgb(10, 166, 28);
-    bottom: 0;
-    left: 0;
+    bottom: var(--gap);
+    left: var(--gap);
     border-radius: 0 100% 0 0;
 }
 
 .game-pad--jaune {
     background: rgb(255, 255, 0);
-    bottom: 0;
-    right: 0;
+    bottom: var(--gap);
+    right: var(--gap);
     border-radius: 100% 0 0 0;
 }
 
 .game-pad--center {
-    width: clamp(160px, 40vw, 280px);
-    height: clamp(160px, 40vw, 280px);
+    width: clamp(150px, calc(var(--btn) * 1.15), 260px);
+    height: clamp(150px, calc(var(--btn) * 1.15), 260px);
     background: rgb(255, 115, 0);
     border-radius: 50%;
     left: 50%;

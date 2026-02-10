@@ -11,6 +11,15 @@ const soundSelect = document.querySelector('#sound-select');
 const playButton = document.querySelector('#play-sound');
 const audioPlayer = document.querySelector('#audio-player');
 
+function updatePlayButtonLabel() {
+    if (!playButton || !audioPlayer) {
+        return;
+    }
+    playButton.textContent = audioPlayer.paused || audioPlayer.ended
+        ? 'Lire le son'
+        : 'Pause';
+}
+
 function setStatus(message, state) {
     if (statusEl) {
         statusEl.classList.remove(...statusClasses);
@@ -111,6 +120,7 @@ function resetAudio() {
     audioPlayer.pause();
     audioPlayer.removeAttribute('src');
     audioPlayer.load();
+    updatePlayButtonLabel();
 }
 
 function buildAudioUrl(soundId) {
@@ -166,6 +176,7 @@ function setAudioSource(soundId) {
     audioPlayer.currentTime = 0;
     audioPlayer.src = buildAudioUrl(soundId);
     audioPlayer.load();
+    updatePlayButtonLabel();
 }
 
 // Choix projet : conserver un console.error global en cas d’échec critique
@@ -216,10 +227,18 @@ function setAudioSource(soundId) {
                     setAudioSource(selectedId);
                 }
                 try {
-                    await audioPlayer.play();
+                    if (audioPlayer.paused || audioPlayer.ended) {
+                        if (audioPlayer.ended) {
+                            audioPlayer.currentTime = 0;
+                        }
+                        await audioPlayer.play();
+                    } else {
+                        audioPlayer.pause();
+                    }
                 } catch (playError) {
                     setStatus('Impossible de lire le son sélectionné.', 'error');
                 }
+                updatePlayButtonLabel();
             });
         }
 
@@ -229,6 +248,9 @@ function setAudioSource(soundId) {
             };
             audioPlayer.addEventListener('error', errorHandler);
             audioPlayer.addEventListener('stalled', errorHandler);
+            audioPlayer.addEventListener('play', updatePlayButtonLabel);
+            audioPlayer.addEventListener('pause', updatePlayButtonLabel);
+            audioPlayer.addEventListener('ended', updatePlayButtonLabel);
         }
 
         initGameUI({

@@ -135,7 +135,7 @@ header('X-Robots-Tag: noindex, nofollow');
                             <button class="btn" type="button" id="play-sound">
                                 Lire le son
                             </button>
-                            <audio id="audio-player" controls preload="none"></audio>
+                            <audio id="audio-player" preload="none"></audio>
                         </div>
 
                         <section class="game">
